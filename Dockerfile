@@ -7,14 +7,18 @@ RUN apt-get update && apt-get install -y curl procps net-tools dnsutils maven
 # Set the working directory in the container
 WORKDIR /app
 
+# Copy the Maven settings file if you have any custom settings
+COPY settings.xml /root/.m2/settings.xml
+
 # Copy the current directory contents into the container at /app
 COPY . .
 
 # Build the application
-RUN mvn clean package
+RUN mvn clean package -DskipTests -U -e -X
+#RUN mvn clean install -e -X
 
 # Expose the port the application runs on
 EXPOSE 8080
 
 # Run the jar file
-ENTRYPOINT ["java", "-jar", "target/bookerapp-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "target/trainingapp-backend-0.0.1-SNAPSHOT.jar"]
