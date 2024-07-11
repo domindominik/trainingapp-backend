@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y curl procps net-tools dnsutils maven
 WORKDIR /app
 
 # Copy the Maven settings file if you have any custom settings
-COPY settings.xml /root/.m2/settings.xml
+#COPY settings.xml /root/.m2/settings.xml
 
 # Copy the current directory contents into the container at /app
 COPY . .
