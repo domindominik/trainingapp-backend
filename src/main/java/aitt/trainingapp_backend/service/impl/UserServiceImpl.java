@@ -45,4 +45,9 @@ public class UserServiceImpl implements UserService{
     public boolean checkPassword(String rawPassword, String encodedPassword) {
         return bCryptPasswordEncoder.matches(rawPassword, encodedPassword);
     }
+
+    @Override
+    public UserModel findUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
+    }
 }
