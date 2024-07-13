@@ -5,7 +5,6 @@ import aitt.trainingapp_backend.model.UserModel;
 import aitt.trainingapp_backend.repository.UserRepository;
 import aitt.trainingapp_backend.service.UserService;
 import aitt.trainingapp_backend.util.JwtTokenUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import java.util.Collections;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -43,5 +43,18 @@ public class UserServiceImpl implements UserService{
         UserModel user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return new User(user.getEmail(), user.getPassword(), Collections.emptyList());
+    }
+    @Override
+    public UserModel findUserById(Long id) {
+        Optional<UserModel> user = userRepository.findById(id);
+        return user.orElse(null);
+    }
+    @Override
+    public boolean checkPassword(String rawPassword, String encodedPassword) {
+        return bCryptPasswordEncoder.matches(rawPassword, encodedPassword);
+    }
+    @Override
+    public UserModel findUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
     }
 }

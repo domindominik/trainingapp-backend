@@ -16,19 +16,12 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<UserModel> saveUser(@RequestBody UserModel user) {
-        UserModel savedUser = userService.saveUser(user);
-        return ResponseEntity.ok(savedUser);
+    public ResponseEntity<?> saveUser(@RequestBody UserModel user) {
+        return ResponseEntity.ok(userService.saveUser(user));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody String email, @RequestBody String password) {
-        UserModel user = userService.findUserByEmail(email);
-        if(user != null && userService.checkPassword(password, user.getPassword())) {
-            String token = userService.generateToken(user);
-            return ResponseEntity.ok(token);
-        } else{
-            return ResponseEntity.status(401).body("Invalid email or password");
+    public ResponseEntity<?> loginUser(@RequestBody UserModel user) {
+            return ResponseEntity.ok(userService.loginUser(user));
         }
-    }
 }
