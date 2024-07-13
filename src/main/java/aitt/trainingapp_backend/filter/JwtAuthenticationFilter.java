@@ -17,13 +17,12 @@ import aitt.trainingapp_backend.util.JwtTokenUtil;
 import java.io.IOException;
 
 @Component
-@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
-    private final UserService userService;
+    private UserService userService;
     @Autowired
-    private final JwtTokenUtil jwtTokenUtil;
+    private JwtTokenUtil jwtTokenUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
