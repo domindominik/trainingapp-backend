@@ -3,7 +3,6 @@ package aitt.trainingapp_backend.util;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import java.util.Date;
@@ -26,7 +25,6 @@ public class JwtTokenUtil {
     private Claims extractAllClaims(String token) {
         //return Jwts.parserBuilder().setSigningKey(jwtSecret).build().parseClaimsJws(token).getBody();
         return Jwts.parser().setSigningKey(jwtSecret).build().parseSignedClaims(token).getBody();
-
     }
     private Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());

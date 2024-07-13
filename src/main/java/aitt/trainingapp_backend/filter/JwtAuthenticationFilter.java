@@ -1,6 +1,6 @@
 package aitt.trainingapp_backend.filter;
 
-import aitt.trainingapp_backend.service.impl.UserServiceImpl;
+import aitt.trainingapp_backend.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +21,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
-    private final UserServiceImpl userService;
+    private final UserService userService;
     @Autowired
     private final JwtTokenUtil jwtTokenUtil;
 
