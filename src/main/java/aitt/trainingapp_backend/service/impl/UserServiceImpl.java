@@ -1,62 +1,79 @@
 package aitt.trainingapp_backend.service.impl;
 
+import aitt.trainingapp_backend.dto.UserDto;
 import aitt.trainingapp_backend.model.UserModel;
 import aitt.trainingapp_backend.repository.UserRepository;
 import aitt.trainingapp_backend.service.UserService;
 import aitt.trainingapp_backend.util.JwtTokenUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
+import java.util.Optional;
 
 @Service
-public class UserServiceImpl implements UserService, UserDetailsService {
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final AuthenticationManager authenticationManager;
     private final JwtTokenUtil jwtTokenUtil;
 
-    @Autowired
-    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder,
-                           AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil) {
+    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, JwtTokenUtil jwtTokenUtil) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.authenticationManager = authenticationManager;
         this.jwtTokenUtil = jwtTokenUtil;
     }
     @Override
-    public UserModel saveUser(UserModel user) {
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+    public UserDto saveUser(UserDto userDto) {
+        UserModel user = new UserModel();
+        user.setEmail(userDto.getEmail());
+        user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
+        UserModel savedUser = userRepository.save(user);
+        return mapToDto(savedUser);
     }
     @Override
-    public UserModel findUserById(Long id) {
-        return userRepository.findById(id).orElse(null);
+    public UserDto findUserById(Long id) {
+        UserModel userModel = userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return mapToDto(userModel);
     }
     @Override
     public boolean checkPassword(String rawPassword, String encodedPassword) {
         return bCryptPasswordEncoder.matches(rawPassword, encodedPassword);
     }
     @Override
-    public UserModel findUserByEmail(String email) {
-        return userRepository.findByEmail(email).orElse(null);
-    }
-    @Override
-    public String loginUser(UserModel user) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
-        UserDetails userDetails = loadUserByUsername(user.getEmail());
-        return jwtTokenUtil.generateToken(userDetails); // Adjusted to correct usage
-    }
-    @Override
-    public UserDetails loadUserByUsername(String username) {
-        UserModel user = userRepository.findByEmail(username)
+    public UserDto findUserByEmail(String email) {
+        UserModel user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), new ArrayList<>());
+        return mapToDto(user);
+    }
+    @Override
+    public String loginUser(UserDto userDto) {
+        Optional<UserModel> userOptional = userRepository.findByEmail(userDto.getEmail());
+        if (userOptional.isPresent()) {
+            UserModel user = userOptional.get();
+            if (checkPassword(userDto.getPassword(), user.getPassword())) {
+                return jwtTokenUtil.generateToken(mapToUserDetails(user));
+            }
+        }
+        throw new UsernameNotFoundException("Invalid email or password");
+    }
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserModel userModel = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return mapToUserDetails(userModel);
+    }
+    private UserDto mapToDto(UserModel user) {
+        UserDto userDto = new UserDto();
+        userDto.setId(user.getId());
+        userDto.setEmail(user.getEmail());
+        userDto.setPassword(user.getPassword());
+        return userDto;
+    }
+    private UserDetails mapToUserDetails(UserModel user) {
+        return org.springframework.security.core.userdetails.User.withUsername(user.getEmail())
+                .password(user.getPassword())
+                .authorities("USER")
+                .build();
     }
 }
