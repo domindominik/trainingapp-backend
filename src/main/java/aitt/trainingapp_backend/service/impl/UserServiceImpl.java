@@ -32,9 +32,9 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public UserDto findUserById(Long id) {
-        return userRepository.findById(id)
-                .map(this::mapToDto)
+        UserModel user = userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return mapToDto(user);
     }
     @Override
     public boolean checkPassword(String rawPassword, String encodedPassword) {
