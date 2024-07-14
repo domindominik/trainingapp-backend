@@ -1,5 +1,6 @@
 package aitt.trainingapp_backend.controller;
 
+import aitt.trainingapp_backend.dto.UserDto;
 import aitt.trainingapp_backend.model.UserModel;
 import aitt.trainingapp_backend.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -16,12 +17,12 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> saveUser(@RequestBody UserModel user) {
+    public ResponseEntity<?> saveUser(@RequestBody UserDto user) {
         return ResponseEntity.ok(userService.saveUser(user));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody UserModel user) {
+    public ResponseEntity<?> loginUser(@RequestBody UserDto user) {
             return ResponseEntity.ok(userService.loginUser(user));
         }
 }
