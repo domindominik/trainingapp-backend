@@ -4,6 +4,7 @@ import aitt.trainingapp_backend.dto.UserDto;
 import aitt.trainingapp_backend.model.UserModel;
 import aitt.trainingapp_backend.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,8 +18,10 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> saveUser(@RequestBody UserDto user) {
-        return ResponseEntity.ok(userService.saveUser(user));
+    public ResponseEntity<?> saveUser(@RequestBody UserDto userDto) {
+        //return ResponseEntity.ok(userService.saveUser(user));
+        userService.saveUser(userDto);
+        return new ResponseEntity<>("User registered successfully", HttpStatus.OK);
     }
 
     @PostMapping("/login")
