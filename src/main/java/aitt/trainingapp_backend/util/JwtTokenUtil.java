@@ -27,11 +27,21 @@ public class JwtTokenUtil {
                 .signWith(getSigningKey())
                 .compact();
     }
+    /*
     public Claims extractClaims(String token) {
-        return Jwts.parser() //parserBuilder()
+        return Jwts.parserBuilder()//parser() //parserBuilder()
                 .setSigningKey(getSigningKey())
                 .build()
                 .parseSignedClaims(token)//parseClaimsJws(token)
+                .getBody();
+    }
+
+     */
+    public Claims extractClaims(String token) {
+        return Jwts.parser()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
                 .getBody();
     }
     public String extractUsername(String token) {
