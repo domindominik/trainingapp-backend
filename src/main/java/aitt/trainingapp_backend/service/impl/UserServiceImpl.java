@@ -15,6 +15,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -83,6 +85,12 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         logger.info("User loaded by username: {}", username);
         return mapToUserDetails(user);
+    }
+    @Override
+    public List<UserRegisterDto> findAllUsers() {
+        logger.debug("Fetching all users from the database");
+        List<UserModel> users = userRepository.findAll();
+        return users.stream().map(this::mapToDto).collect(Collectors.toList());
     }
     private UserRegisterDto mapToDto(UserModel user) {
         logger.debug("Mapping UserModel to UserRegisterDto for user: {}", user.getEmail());
