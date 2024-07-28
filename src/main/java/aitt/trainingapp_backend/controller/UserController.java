@@ -36,7 +36,7 @@ public class UserController {
     }
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<UserRegisterDto>> getAllUsers() {
+    public ResponseEntity<?> getAllUsers() {
         logger.debug("Fetching all users");
         List<UserRegisterDto> users = userService.findAllUsers();
         logger.info("Fetched all users, count: {}", users.size());
