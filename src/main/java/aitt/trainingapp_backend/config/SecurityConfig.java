@@ -13,32 +13,40 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
+    private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
-
     @Autowired
     private RoleHierarchyService roleHierarchyService;
-
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        logger.info("Configuring security filter chain");
         http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/register", "/api/users/login").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                );
+                .csrf(csrf -> {
+                    logger.debug("Disabling CSRF protection");
+                    csrf.disable();
+                })
+                .authorizeHttpRequests(auth -> {
+                    logger.debug("Configuring authorization rules");
+                    auth
+                            .requestMatchers("/api/users/register", "/api/users/login").permitAll()
+                            .requestMatchers("/api/users/**").hasRole("ADMIN")  // Only ADMIN can access endpoints under /api/users/*
+                            .anyRequest().authenticated();
+                })
+                .sessionManagement(session -> {
+                    logger.debug("Setting session management policy to STATELESS");
+                    session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                });
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        logger.info("Added JwtAuthenticationFilter before UsernamePasswordAuthenticationFilter");
         return http.build();
     }
 
@@ -63,14 +71,17 @@ public class SecurityConfig {
      */
     @Bean
     public CustomUserDetailsService customUserDetailsService() {
+        logger.info("Creating CustomUserDetailsService bean");
         return customUserDetailsService;
     }
     @Bean
     public RoleHierarchyService roleHierarchyService() {
+        logger.info("Creating RoleHierarchyService bean");
         return roleHierarchyService;
     }
     @Bean
     public PasswordEncoder passwordEncoder() {
+        logger.info("Creating PasswordEncoder bean");
         return new BCryptPasswordEncoder();
     }
 }

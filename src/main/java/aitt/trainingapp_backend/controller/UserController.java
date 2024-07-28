@@ -34,7 +34,7 @@ public class UserController {
         logger.info("User logged in successfully with email: {}", userDto.getEmail());
         return ResponseEntity.ok(token);
     }
-    @GetMapping
+    @GetMapping("/users")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> getAllUsers() {
         logger.debug("Fetching all users");
