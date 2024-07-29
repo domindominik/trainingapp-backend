@@ -1,7 +1,7 @@
 package aitt.trainingapp_backend.controller;
 
 import aitt.trainingapp_backend.dto.ExerciseDto;
-import aitt.trainingapp_backend.model.ExerciseModel;
+import org.springframework.http.HttpStatus;
 import aitt.trainingapp_backend.service.ExerciseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +18,10 @@ public class ExerciseController {
 
     @PostMapping("/add")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_COACH')")
-    public ResponseEntity<ExerciseModel> addExercise(@RequestBody ExerciseDto exerciseDto) {
-        log.info("Received request to add new exercise");
-        ExerciseModel exercise = exerciseService.addExercise(exerciseDto);
-        log.info("Exercise added with ID: {}", exercise.getId());
-        return ResponseEntity.ok(exercise);
+    public ResponseEntity<String> addExercise(@RequestBody ExerciseDto exerciseDto) {
+        log.info("Received request to add new exercise with name: {}", exerciseDto.getName());
+        exerciseService.addExercise(exerciseDto);
+        log.info("Exercise added successfully with name: {}", exerciseDto.getName());
+        return new ResponseEntity<>("Exercise added successfully", HttpStatus.OK);
     }
 }
