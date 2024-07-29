@@ -2,6 +2,7 @@ package aitt.trainingapp_backend.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,6 @@ public class ExerciseModel {
     private Set<ExerciseCategory> category;
     private String description;
     private String mediaLink;
-    @NotEmpty(message = "User Id cannot be null")
+    @NotNull(message = "User Id cannot be null")
     private Long userId;
 }

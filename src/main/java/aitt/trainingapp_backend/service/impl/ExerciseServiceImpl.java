@@ -31,14 +31,14 @@ public class ExerciseServiceImpl implements ExerciseService {
         exercise.setUserId(exerciseDto.getUserId());
         return exercise;
     }
-    private ExerciseDto convertToDto(ExerciseModel exerciseModel) {
+    private ExerciseDto convertToDto(ExerciseModel exercise) {
         ExerciseDto exerciseDto = new ExerciseDto();
-        exerciseDto.setId(exerciseModel.getId());
-        exerciseDto.setName(exerciseModel.getName());
-        exerciseDto.setCategory(exerciseModel.getCategory());
-        exerciseDto.setDescription(exerciseModel.getDescription());
-        exerciseDto.setMediaLink(exerciseModel.getMediaLink());
-        exerciseDto.setUserId(exerciseModel.getUserId());
+        exerciseDto.setId(exercise.getId());
+        exerciseDto.setName(exercise.getName());
+        exerciseDto.setCategory(exercise.getCategory());
+        exerciseDto.setDescription(exercise.getDescription());
+        exerciseDto.setMediaLink(exercise.getMediaLink());
+        exerciseDto.setUserId(exercise.getUserId());
         return exerciseDto;
     }
 }

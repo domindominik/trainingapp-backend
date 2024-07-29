@@ -18,10 +18,10 @@ public class ExerciseController {
 
     @PostMapping("/add")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_COACH')")
-    public ResponseEntity<String> addExercise(@RequestBody ExerciseDto exerciseDto) {
-        log.info("Received request to add new exercise with name: {}", exerciseDto.getName());
-        ExerciseDto savedExerciseDto = exerciseService.addExercise(exerciseDto);
-        log.info("Exercise added successfully with ID: {}", savedExerciseDto.getId());
-        return new ResponseEntity<>("Exercise added successfully", HttpStatus.OK);
+    public ResponseEntity<ExerciseDto> addExercise(@RequestBody ExerciseDto exerciseDto) {
+        log.info("Received request to add new exercise");
+        ExerciseDto savedExercise = exerciseService.addExercise(exerciseDto);
+        log.info("Exercise added with ID: {}", savedExercise.getId());
+        return ResponseEntity.ok(savedExercise);
     }
 }
