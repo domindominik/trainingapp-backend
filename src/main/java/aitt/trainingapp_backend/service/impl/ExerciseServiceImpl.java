@@ -7,6 +7,8 @@ import aitt.trainingapp_backend.service.ExerciseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -21,6 +23,20 @@ public class ExerciseServiceImpl implements ExerciseService {
         ExerciseModel savedExercise = exerciseRepository.save(exercise);
         log.info("Exercise added with ID: {}", savedExercise.getId());
         return convertToDto(savedExercise);
+    }
+    @Override
+    public List<ExerciseDto> getAllExercises() {
+        log.info("Fetching all exercises");
+        List<ExerciseModel> exercises = exerciseRepository.findAll();
+        log.info("Fetched all exercises, count: {}", exercises.size());
+        return exercises.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+    @Override
+    public List<ExerciseDto> getExercisesByUserId(Long userId) {
+        log.info("Fetching exercises for user ID: {}", userId);
+        List<ExerciseModel> exercises = exerciseRepository.findByUserId(userId);
+        log.info("Fetched exercises for user ID: {}, count: {}", userId, exercises.size());
+        return exercises.stream().map(this::convertToDto).collect(Collectors.toList());
     }
     private ExerciseModel convertToModel(ExerciseDto exerciseDto) {
         ExerciseModel exercise = new ExerciseModel();
