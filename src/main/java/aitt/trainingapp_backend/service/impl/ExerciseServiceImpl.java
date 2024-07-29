@@ -15,16 +15,30 @@ public class ExerciseServiceImpl implements ExerciseService {
     private final ExerciseRepository exerciseRepository;
 
     @Override
-    public ExerciseModel addExercise(ExerciseDto exerciseDto) {
+    public ExerciseDto addExercise(ExerciseDto exerciseDto) {
         log.info("Adding new exercise with name: {}", exerciseDto.getName());
-        ExerciseModel exercise = new ExerciseModel();
-        exercise.setName(exerciseDto.getName());
-        exercise.setRoles(exerciseDto.getRoles());
-        exercise.setDescription(exerciseDto.getDescription());
-        exercise.setMediaLink(exerciseDto.getMediaLink());
-        exercise.setUserId(exerciseDto.getUserId());
-        ExerciseModel savedExercise = exerciseRepository.save(exercise);
+        ExerciseModel exerciseModel = convertToModel(exerciseDto);
+        ExerciseModel savedExercise = exerciseRepository.save(exerciseModel);
         log.info("Exercise added with ID: {}", savedExercise.getId());
-        return savedExercise;
+        return convertToDto(savedExercise);
+    }
+    private ExerciseModel convertToModel(ExerciseDto exerciseDto) {
+        ExerciseModel exerciseModel = new ExerciseModel();
+        exerciseModel.setName(exerciseDto.getName());
+        exerciseModel.setCategory(exerciseDto.getCategory());
+        exerciseModel.setDescription(exerciseDto.getDescription());
+        exerciseModel.setMediaLink(exerciseDto.getMediaLink());
+        exerciseModel.setUserId(exerciseDto.getUserId());
+        return exerciseModel;
+    }
+    private ExerciseDto convertToDto(ExerciseModel exerciseModel) {
+        ExerciseDto exerciseDto = new ExerciseDto();
+        exerciseDto.setId(exerciseModel.getId());
+        exerciseDto.setName(exerciseModel.getName());
+        exerciseDto.setCategory(exerciseModel.getCategory());
+        exerciseDto.setDescription(exerciseModel.getDescription());
+        exerciseDto.setMediaLink(exerciseModel.getMediaLink());
+        exerciseDto.setUserId(exerciseModel.getUserId());
+        return exerciseDto;
     }
 }

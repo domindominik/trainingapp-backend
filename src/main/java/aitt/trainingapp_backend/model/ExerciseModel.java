@@ -20,9 +20,9 @@ public class ExerciseModel {
     private String name;
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    private Set<ExerciseCategory> roles;
+    private Set<ExerciseCategory> category;
     private String description;
     private String mediaLink;
-    @NotEmpty
+    @NotEmpty(message = "User Id cannot be null")
     private Long userId;
 }
