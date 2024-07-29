@@ -17,19 +17,19 @@ public class ExerciseServiceImpl implements ExerciseService {
     @Override
     public ExerciseDto addExercise(ExerciseDto exerciseDto) {
         log.info("Adding new exercise with name: {}", exerciseDto.getName());
-        ExerciseModel exerciseModel = convertToModel(exerciseDto);
-        ExerciseModel savedExercise = exerciseRepository.save(exerciseModel);
+        ExerciseModel exercise = convertToModel(exerciseDto);
+        ExerciseModel savedExercise = exerciseRepository.save(exercise);
         log.info("Exercise added with ID: {}", savedExercise.getId());
         return convertToDto(savedExercise);
     }
     private ExerciseModel convertToModel(ExerciseDto exerciseDto) {
-        ExerciseModel exerciseModel = new ExerciseModel();
-        exerciseModel.setName(exerciseDto.getName());
-        exerciseModel.setCategory(exerciseDto.getCategory());
-        exerciseModel.setDescription(exerciseDto.getDescription());
-        exerciseModel.setMediaLink(exerciseDto.getMediaLink());
-        exerciseModel.setUserId(exerciseDto.getUserId());
-        return exerciseModel;
+        ExerciseModel exercise = new ExerciseModel();
+        exercise.setName(exerciseDto.getName());
+        exercise.setCategory(exerciseDto.getCategory());
+        exercise.setDescription(exerciseDto.getDescription());
+        exercise.setMediaLink(exerciseDto.getMediaLink());
+        exercise.setUserId(exerciseDto.getUserId());
+        return exercise;
     }
     private ExerciseDto convertToDto(ExerciseModel exerciseModel) {
         ExerciseDto exerciseDto = new ExerciseDto();
