@@ -38,7 +38,10 @@ public class SecurityConfig {
                     logger.debug("Configuring authorization rules");
                     auth
                             .requestMatchers("/api/users/register", "/api/users/login").permitAll()
-                            .requestMatchers("/api/users/**").hasRole("ADMIN")  // Only ADMIN can access endpoints under /api/users/*
+                            .requestMatchers("/api/users/users").hasRole("ADMIN")  // Only ADMIN can access endpoints under /api/users/*
+                            .requestMatchers("/api/exercises/add").hasAnyRole("ADMIN", "COACH")
+                            .requestMatchers("/api/exercises/all").hasRole("ADMIN")
+                            .requestMatchers("/api/exercises/user").authenticated()
                             .anyRequest().authenticated();
                 })
                 .sessionManagement(session -> {
